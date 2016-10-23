@@ -1,0 +1,24 @@
+<svg width="246px" height="36px" viewBox="160 2790 246 36" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 40.3 (33839) - http://www.bohemiancoding.com/sketch -->
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Group-5" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(161.000000, 2791.000000)">
+        <g id="Group-27" transform="translate(34.995745, 0.000000)">
+            <g id="Group" transform="translate(0.000000, 0.714286)"></g>
+            <text id="My-Timelines" font-family="ProximaNova-Bold, Proxima Nova" font-size="25" font-weight="bold" fill="#0F80CF">
+                <tspan x="9.9824291" y="24">My Timelines</tspan>
+            </text>
+        </g>
+        <g id="1473880900_18_job_task_timeline_period_completion_manage_discussion" transform="translate(0.000000, 0.809524)">
+            <g id="layer1" transform="translate(0.000000, 0.141068)">
+                <g id="g6828" transform="translate(-0.000034, -0.000001)">
+                    <rect id="rect6784" fill="#576D7E" transform="translate(13.877684, 16.359647) rotate(90.000000) translate(-13.877684, -16.359647) " x="13.0559298" y="3.10891139" width="1.64350869" height="26.5014702" rx="0.821754344"></rect>
+                    <ellipse id="circle6794" fill="#0F80CF" transform="translate(20.685384, 16.335175) rotate(90.000000) translate(-20.685384, -16.335175) " cx="20.685384" cy="16.335175" rx="2.46535672" ry="2.48451283"></ellipse>
+                    <ellipse id="circle6817" fill="#0F80CF" transform="translate(7.536815, 16.335175) rotate(90.000000) translate(-7.536815, -16.335175) " cx="7.53681483" cy="16.335175" rx="2.46535672" ry="2.48451283"></ellipse>
+                    <path d="M3.42791557,0.599927032 L11.6457141,0.599927032 C12.5562683,0.599927032 13.2893138,1.33865552 13.2893138,2.25626892 L13.2893138,7.22529459 C13.2893138,8.142908 12.5562683,8.88163648 11.6457141,8.88163648 L9.59126446,8.88163648 L7.53681483,12.1943203 L5.4823652,8.88163648 L3.42791557,8.88163648 C2.51736137,8.88163648 1.78431582,8.142908 1.78431582,7.22529459 L1.78431582,2.25626892 C1.78431582,1.33865552 2.51736137,0.599927032 3.42791557,0.599927032 L3.42791557,0.599927032 Z" id="rect6819" fill="#0F80CF"></path>
+                    <path d="M16.5764841,32.0704229 L24.7942839,32.0704229 C25.7048371,32.0704229 26.437883,31.3316945 26.437883,30.414081 L26.437883,25.4450554 C26.437883,24.527442 25.7048371,23.7887135 24.7942839,23.7887135 L22.7398331,23.7887135 L20.685384,20.4760297 L18.6309348,23.7887135 L16.5764841,23.7887135 C15.6659305,23.7887135 14.932885,24.527442 14.932885,25.4450554 L14.932885,30.414081 C14.932885,31.3316945 15.6659305,32.0704229 16.5764841,32.0704229 L16.5764841,32.0704229 Z" id="path6822" fill="#0F80CF"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

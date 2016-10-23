@@ -1,0 +1,35 @@
+{
+  "name": "uninode",
+  "version": "1.0.0",
+  "description": "Universal NodeJs App with React",
+  "main": "index.js",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0",
+    "fs-extra": "^0.30.0",
+    "jsonwebtoken": "^7.1.9",
+    "react": "^15.3.2",
+    "react-dom": "^15.3.2",
+    "react-router": "^2.8.1",
+    "redux": "^3.6.0",
+    "watch": "^1.0.1",
+    "webpack": "^1.13.2",
+    "whatwg-fetch": "^1.0.0",
+    "ws": "^1.1.1"
+  },
+  "devDependencies": {
+    "babel-polyfill": "^6.16.0",
+    "source-map-loader": "^0.1.5",
+    "ts-loader": "^0.8.2",
+    "typescript": "^1.8.10",
+    "typings": "^1.3.3",
+    "webpack": "^1.13.2",
+    "webpack-dev-server": "^1.16.2"
+  },
+  "scripts": {
+    "postinstall": "typings install",
+    "start": "node ./build/main.js"
+  },
+  "author": "cpteam",
+  "license": "ISC"
+}

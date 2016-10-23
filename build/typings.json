@@ -1,0 +1,12 @@
+{
+  "name": "timeline",
+  "dependencies": {},
+  "globalDependencies": {
+    "fs-extra": "registry:dt/fs-extra#0.0.0+20161004190449",
+    "ncp": "registry:dt/ncp#0.5.1+20160906145159",
+    "node": "registry:dt/node#6.0.0+20160621231320",
+    "watch": "registry:dt/watch#0.0.0+20160316155526",
+    "websocket": "registry:dt/websocket#0.0.0+20160930124123",
+    "ws": "registry:dt/ws#0.0.0+20161003184106"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "name": "uninode",
+  "dependencies": {},
+  "globalDependencies": {
+    "body-parser": "registry:dt/body-parser#0.0.0+20160619023215",
+    "express": "registry:dt/express#4.0.0+20160317120654",
+    "express-serve-static-core": "registry:dt/express-serve-static-core#0.0.0+20160625155614",
+    "fs-extra": "registry:dt/fs-extra#0.0.0+20161004190449",
+    "jsonwebtoken": "registry:dt/jsonwebtoken#0.0.0+20160720062725",
+    "mime": "registry:dt/mime#0.0.0+20160316155526",
+    "node": "registry:dt/node#6.0.0+20160621231320",
+    "react": "registry:dt/react#0.14.0+20161008064207",
+    "react-dom": "registry:dt/react-dom#0.14.0+20160412154040",
+    "react-router": "registry:dt/react-router#2.0.0+20160928130202",
+    "react-router/history": "registry:dt/react-router/history#2.0.0+20160830150755",
+    "serve-static": "registry:dt/serve-static#0.0.0+20160606155157",
+    "watch": "registry:dt/watch#0.0.0+20160316155526",
+    "whatwg-fetch": "registry:dt/whatwg-fetch#0.0.0+20161004182750",
+    "whatwg-streams": "registry:dt/whatwg-streams#0.0.0+20160829180742",
+    "ws": "registry:dt/ws#0.0.0+20161003184106"
+  }
+}
