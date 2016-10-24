@@ -16,7 +16,7 @@ export class HelloWorldService {
 }
 ```
 
-List service in Services.ts
+List service in services/index.ts
 
 ```
 export services = { HelloWorldService };
