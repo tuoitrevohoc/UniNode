@@ -175,7 +175,7 @@ function startLiveReloadServer() {
         response.end();
     });
     const wsServer = new ws.Server({
-        server
+        server: server
     });
     wsServer.on("connection", (socket) => {
         sockets.push(socket);
