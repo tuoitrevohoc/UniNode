@@ -1,12 +1,13 @@
+/// <reference path="./cross-spawn.d.ts" />
+
 import * as ts from 'typescript';
 import * as path from 'path';
 import * as fs from 'fs-extra';
-import {spawnSync} from "child_process";
-import {spawn} from "child_process";
 import * as ws from "ws";
 import * as http from "http";
 import {watchTree} from "watch";
 import {copySync} from "fs-extra";
+import * as spawn from "cross-spawn";
 
 const compileOptions: ts.CompilerOptions = {
   "sourceMap": true,
@@ -23,7 +24,7 @@ const compileOptions: ts.CompilerOptions = {
  */
 function isExportNode(node: ts.Node) {
   return ((node.flags & ts.NodeFlags.Export) !== 0) &&
-    (node.parent && node.parent.kind === ts.SyntaxKind.SourceFile);
+      (node.parent && node.parent.kind === ts.SyntaxKind.SourceFile);
 }
 
 
@@ -35,6 +36,7 @@ async function compileClient() {
 
   const options = Object.assign(compileOptions);
 
+  console.log("Compiling");
   fs.copySync("./application", "dist/application");
   fs.copySync("./public", "./dist/public");
 
@@ -46,8 +48,15 @@ async function compileClient() {
  * Compile client code
  */
 function compileCode() {
-  const result = spawnSync("webpack");
-  console.log(result.stdout.toString());
+  const result = spawn.sync("webpack");
+
+  if (result && result.stdout) {
+    console.log(result.stdout.toString());
+  }
+
+  if (result && result.stderr) {
+    console.log(result.stderr.toString());
+  }
 
   fs.removeSync("./dist/application");
 }
@@ -59,11 +68,11 @@ function compileCode() {
 function generateServices(options: ts.CompilerOptions) {
 
   const program = ts.createProgram(
-    [
-      "./dist/application/Application.tsx",
-      "./typings/index.d.ts"
-    ],
-    options);
+      [
+        "./dist/application/Application.tsx",
+        "./typings/index.d.ts"
+      ],
+      options);
 
   const typeChecker = program.getTypeChecker();
 
@@ -123,7 +132,7 @@ function generateServices(options: ts.CompilerOptions) {
                 parameters: signature.parameters.map((parameter: ts.Symbol) => ({
                   name: parameter.getName(),
                   type: typeChecker.typeToString(
-                    typeChecker.getTypeOfSymbolAtLocation(parameter, parameter.valueDeclaration)
+                      typeChecker.getTypeOfSymbolAtLocation(parameter, parameter.valueDeclaration)
                   )
                 })),
                 returnType: typeChecker.typeToString(signature.getReturnType())
@@ -152,11 +161,11 @@ function generateServices(options: ts.CompilerOptions) {
 
       classText += classDeclaration.methods.map(method => {
         let methodText = "\tasync " + method.name + "(" + method.parameters.map(
-          parameter => parameter.name + ": " + parameter.type
-      ).join(",") + "): " + method.returnType + " {\n";
+                parameter => parameter.name + ": " + parameter.type
+            ).join(",") + "): " + method.returnType + " {\n";
 
         methodText += "\t\treturn invoke(\"" + classDeclaration.name + "\", \"" + method.name +
-          "\", Array.from(arguments));\n";
+            "\", Array.from(arguments));\n";
         methodText += "\t}\n";
 
         return methodText;
@@ -183,7 +192,7 @@ function compileServer(outDir: string = "./dist/server") {
   options["moduleResolution"] = ts.ModuleResolutionKind.NodeJs;
 
   const program = ts.createProgram(["application/ServerApplication.ts", "typings/index.d.ts"],
-    options);
+      options);
 
   program.emit();
 }
@@ -210,9 +219,9 @@ function startLiveReloadServer() {
 
   /// create live reload server
   const server = http.createServer(function (request, response) {
-      response.write(reloadJs);
-      response.end();
-    });
+    response.write(reloadJs);
+    response.end();
+  });
 
   const wsServer = new ws.Server({
     server
@@ -245,7 +254,15 @@ function runServer() {
   let serverProcess = spawn("node", ["./dist/server/ServerApplication.js"]);
 
   serverProcess.stdout.on("data", (data) => {
-    console.log(data.toString())
+    if (data) {
+      console.log(data.toString())
+    }
+  });
+
+  serverProcess.stderr.on("data", (data) => {
+    if (data) {
+      console.log(data.toString());
+    }
   });
 
   return serverProcess;
@@ -255,7 +272,7 @@ function runServer() {
  * Reload all pages
  */
 function sendMessage(message: string = "reload") {
-  for (var socket of sockets) {
+  for (const socket of sockets) {
     socket.send(message);
   }
 }
@@ -274,22 +291,30 @@ function watch() {
     if (typeof f == "object" && prev === null && curr === null) {
       console.log("Watcher is online");
     } else {
-      sendMessage("reloading");
+      if (f.endsWith("ts")) {
+        sendMessage("reloading");
 
-      console.log("File changed ");
-      console.log("Stop server...");
+        console.log("File changed ");
+        console.log("Stop server...");
 
-      serverProcess.kill();
+        serverProcess.kill();
 
-      build();
+        build();
 
-      console.log("Start server...");
+        console.log("Start server...");
 
-      serverProcess = runServer();
+        serverProcess = runServer();
 
-      setTimeout(function () {
+        setTimeout(function () {
+          sendMessage();
+        }, 1000);
+      } else {
+        sendMessage("reloading");
+        compileClient();
+
         sendMessage();
-      }, 1000);
+        console.log("reloaded..");
+      }
     }
 
   });
@@ -316,5 +341,3 @@ function watch() {
 
 build();
 watch();
-
-

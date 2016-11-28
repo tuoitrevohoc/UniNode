@@ -1,3 +1,4 @@
+/// <reference path="./cross-spawn.d.ts" />
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -10,12 +11,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 const ts = require('typescript');
 const path = require('path');
 const fs = require('fs-extra');
-const child_process_1 = require("child_process");
-const child_process_2 = require("child_process");
 const ws = require("ws");
 const http = require("http");
 const watch_1 = require("watch");
 const fs_extra_1 = require("fs-extra");
+const spawn = require("cross-spawn");
 const compileOptions = {
     "sourceMap": true,
     "module": ts.ModuleKind.CommonJS,
@@ -38,6 +38,7 @@ function isExportNode(node) {
 function compileClient() {
     return __awaiter(this, void 0, void 0, function* () {
         const options = Object.assign(compileOptions);
+        console.log("Compiling");
         fs.copySync("./application", "dist/application");
         fs.copySync("./public", "./dist/public");
         generateServices(options);
@@ -48,8 +49,13 @@ function compileClient() {
  * Compile client code
  */
 function compileCode() {
-    const result = child_process_1.spawnSync("webpack");
-    console.log(result.stdout.toString());
+    const result = spawn.sync("webpack");
+    if (result && result.stdout) {
+        console.log(result.stdout.toString());
+    }
+    if (result && result.stderr) {
+        console.log(result.stderr.toString());
+    }
     fs.removeSync("./dist/application");
 }
 /**
@@ -190,9 +196,16 @@ function startLiveReloadServer() {
  * @return {ChildProcess}
  */
 function runServer() {
-    let serverProcess = child_process_2.spawn("node", ["./dist/server/ServerApplication.js"]);
+    let serverProcess = spawn("node", ["./dist/server/ServerApplication.js"]);
     serverProcess.stdout.on("data", (data) => {
-        console.log(data.toString());
+        if (data) {
+            console.log(data.toString());
+        }
+    });
+    serverProcess.stderr.on("data", (data) => {
+        if (data) {
+            console.log(data.toString());
+        }
     });
     return serverProcess;
 }
@@ -200,7 +213,7 @@ function runServer() {
  * Reload all pages
  */
 function sendMessage(message = "reload") {
-    for (var socket of sockets) {
+    for (const socket of sockets) {
         socket.send(message);
     }
 }
@@ -216,16 +229,24 @@ function watch() {
             console.log("Watcher is online");
         }
         else {
-            sendMessage("reloading");
-            console.log("File changed ");
-            console.log("Stop server...");
-            serverProcess.kill();
-            build();
-            console.log("Start server...");
-            serverProcess = runServer();
-            setTimeout(function () {
+            if (f.endsWith("ts")) {
+                sendMessage("reloading");
+                console.log("File changed ");
+                console.log("Stop server...");
+                serverProcess.kill();
+                build();
+                console.log("Start server...");
+                serverProcess = runServer();
+                setTimeout(function () {
+                    sendMessage();
+                }, 1000);
+            }
+            else {
+                sendMessage("reloading");
+                compileClient();
                 sendMessage();
-            }, 1000);
+                console.log("reloaded..");
+            }
         }
     });
     watch_1.watchTree("./public/styles", (f, curr, prev) => {
