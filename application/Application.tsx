@@ -4,6 +4,7 @@ import * as ReactDOM from "react-dom";
 import {Router, Route, browserHistory} from 'react-router';
 import {ModuleDefinition} from "./common/components/ModuleDefinition";
 import UserManagementModule from "./modules/user-managerment/index";
+import {NavigationBar} from "./components/NavigationBar";
 
 
 /**
@@ -22,7 +23,8 @@ export class Application extends React.Component<{}, {}> {
    */
   render() {
     return (
-      <div className="wrapper">
+      <div>
+        <NavigationBar/>
         {this.props.children}
       </div>
     )
