@@ -1,6 +1,7 @@
 import * as express from "express";
 import * as bodyParser from "body-parser";
 import * as jwt from "jsonwebtoken";
+import * as path from "path";
 
 import {User} from "./common/model/User";
 import {config} from "./server/Security";
@@ -64,6 +65,10 @@ application.post("/remote/:service/:method", async (request, response) => {
       exception
     }));
   }
+});
+
+application.use((request, response) => {
+  response.sendFile(path.join(__dirname, "../public/index.html"));
 });
 
 /// listen
