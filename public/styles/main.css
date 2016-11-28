@@ -1,3 +1,8 @@
+body {
+    overflow: hidden;
+    background-color: rgb(233, 240, 245);
+}
+
 /** styles **/
 .ui.menu .item {
     color: rgba(43, 61, 81, 0.8);
@@ -21,4 +26,30 @@
     font-size: 18px;
     transition-duration: 0.25s;
     display: inline-block;
+}
+
+#application {
+    margin-top: 60px;
+}
+
+.ui.drawer.menu {
+    width: 251px;
+    border-radius: 0;
+    position: fixed;
+    top: 60px;
+    bottom: 0;
+    border-width: 0 1px 0 0;
+    overflow: auto;
+    background-color: #333;
+}
+
+.ui.drawer.menu .item {
+    color: #fff;
+}
+
+#content {
+    margin-left: 251px;
+    margin-top: 60px;
+    transition-duration: 0.25s;
+    padding: 10px;
 }

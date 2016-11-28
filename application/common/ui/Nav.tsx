@@ -1,5 +1,6 @@
 import * as React from "react";
-import {Link} from "react-router";
+import {Link, Router} from "react-router";
+import {LocationDescriptor} from "history";
 
 /**
  * navigation bars
@@ -76,7 +77,7 @@ interface ItemProps {
   /**
    * link to
    */
-  to?: string;
+  to?: Router.RoutePattern | LocationDescriptor;
 
   /**
    * class name
@@ -97,7 +98,7 @@ interface ItemProps {
    * on click event
    * @param event
    */
-  onClick?(event: React.MouseEvent);
+  onClick?(event: React.MouseEvent<Link | HTMLElement>);
 }
 
 /**
@@ -110,6 +111,7 @@ export class Item extends React.Component<ItemProps, {}> {
    */
   render() {
     return (
+    this.props.to ?
       <Link to={this.props.to}
             className={`ui item ${this.props.className || ''}`}
             activeClassName={this.props.activeClassName}
@@ -119,7 +121,15 @@ export class Item extends React.Component<ItemProps, {}> {
           <i className={`icon ${this.props.icon}`} />
         ) : null}
         {this.props.children}
-      </Link>
+      </Link> :
+      <a className={`ui item ${this.props.className || ''}`}
+         onClick={this.props.onClick}
+      >
+        {this.props.icon ? (
+          <i className={`icon ${this.props.icon}`} />
+        ) : null}
+        {this.props.children}
+      </a>
     )
   }
 }

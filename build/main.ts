@@ -10,6 +10,27 @@ import {copySync} from "fs-extra";
 import * as spawn from "cross-spawn";
 let config = require("../webpack.config");
 
+interface ParameterDefinition {
+  name: string;
+  type: string;
+}
+
+interface MethodDefinition {
+  name: string;
+  parameters: ParameterDefinition[]
+  returnType: string;
+}
+
+interface ClassDefinition {
+  name: string;
+  methods: MethodDefinition[];
+}
+
+interface ModuleDefinition {
+  imports: string[];
+  classes: ClassDefinition[];
+}
+
 const compileOptions: ts.CompilerOptions = {
   "sourceMap": true,
   "module": ts.ModuleKind.CommonJS,
@@ -83,7 +104,7 @@ function generateServices(options: ts.CompilerOptions) {
 
       const dirName = path.dirname(sourceFile.path);
 
-      if (dirName.endsWith("/application/services")) {
+      if (dirName.endsWith("/services")) {
         processService(sourceFile);
       }
     }
@@ -98,7 +119,7 @@ function generateServices(options: ts.CompilerOptions) {
       /**
        * the service file
        */
-      let serviceFile = {
+      let serviceFile: ModuleDefinition = {
         imports: [
           "import {invoke} from \"../common/network/RemoteService\";"
         ],
@@ -113,36 +134,39 @@ function generateServices(options: ts.CompilerOptions) {
           if (node.kind === ts.SyntaxKind.ClassDeclaration) {
 
 
-            const classDeclaration = <ts.ClassDeclaration> node;
-            const symbol = typeChecker.getSymbolAtLocation(classDeclaration.name);
+            const classDeclaration: ts.ClassDeclaration = <ts.ClassDeclaration> node;
+            const symbol = typeChecker.getSymbolAtLocation(<ts.Node> classDeclaration.name);
 
-            let classDefinition = {
+            let classDefinition: ClassDefinition = {
               name: symbol.name,
               methods: []
             };
 
             serviceFile.classes.push(classDefinition);
 
-            for (const memberName in symbol.members) {
-              const member = symbol.members[memberName];
+            if (symbol.members) {
+              for (const memberName in symbol.members) {
+                const member = symbol.members[memberName];
 
-              if ((member.flags & ts.SymbolFlags.Method) !== 0) {
+                if ((member.flags & ts.SymbolFlags.Method) !== 0) {
 
-                const methodDeclaration = <ts.MethodDeclaration> member.valueDeclaration;
-                const signature = typeChecker.getSignatureFromDeclaration(methodDeclaration);
+                  const methodDeclaration = <ts.MethodDeclaration> member.valueDeclaration;
+                  const signature = typeChecker.getSignatureFromDeclaration(methodDeclaration);
 
-                const method = {
-                  name: member.name,
-                  parameters: signature.parameters.map((parameter: ts.Symbol) => ({
-                    name: parameter.getName(),
-                    type: typeChecker.typeToString(
-                      typeChecker.getTypeOfSymbolAtLocation(parameter, parameter.valueDeclaration)
-                    )
-                  })),
-                  returnType: typeChecker.typeToString(signature.getReturnType())
-                };
+                  const method: MethodDefinition = {
+                    name: member.name,
+                    parameters: signature.parameters.map((parameter: ts.Symbol) => ({
+                      name: parameter.getName(),
+                      type: typeChecker.typeToString(
+                        typeChecker.getTypeOfSymbolAtLocation(parameter,
+                          <ts.Node> parameter.valueDeclaration)
+                      )
+                    })),
+                    returnType: typeChecker.typeToString(signature.getReturnType())
+                  };
 
-                classDefinition.methods.push(method);
+                  classDefinition.methods.push(method);
+                }
               }
             }
           }
@@ -213,7 +237,7 @@ function build() {
 /**
  * list of sockets
  */
-const sockets = [];
+const sockets: any[] = [];
 
 /**
  * live reload server
@@ -329,7 +353,7 @@ function watch() {
     if (typeof f == "object" && prev === null && curr === null) {
       console.log("Style watcher is online");
     } else {
-      if (f.endsWith("scss")) {
+      if (f.endsWith("css")) {
         sendMessage("reloading");
         console.log("style changed..");
 

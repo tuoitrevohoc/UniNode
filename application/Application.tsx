@@ -1,10 +1,13 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
-import {Router, Route, browserHistory} from 'react-router';
 import {ModuleDefinition} from "./common/components/ModuleDefinition";
 import UserManagementModule from "./modules/user-managerment/index";
 import {NavigationBar} from "./components/NavigationBar";
+import {SidebarMenu} from "./components/SidebarMenu";
+import {appData} from "./stores/AppData";
+import {Menu} from "./common/ui/Menu";
+import {Route, Router, browserHistory} from "react-router";
 
 
 /**
@@ -25,7 +28,12 @@ export class Application extends React.Component<{}, {}> {
     return (
       <div>
         <NavigationBar/>
-        {this.props.children}
+        <div id="application">
+          <SidebarMenu/>
+          <div id="content">
+            {this.props.children}
+          </div>
+        </div>
       </div>
     )
   }
@@ -41,6 +49,7 @@ interface ModuleApplicationProps {
    *list of modules
    */
   modules: [any];
+
 }
 
 /**
@@ -48,26 +57,40 @@ interface ModuleApplicationProps {
  */
 class ModuleApplication extends React.Component<ModuleApplicationProps, {}> {
 
+
   /**
-   * get routes from modules
+   * Filter component by types
+   * @param type
    */
-  get routes() {
-    let routes = [];
+  filter(type: string) {
+    let components: any[] = [];
 
     for (const module of this.props.modules as ModuleDefinition[]) {
 
       React.Children.map(module.props.children, child => {
-        const name = child['type']['displayName'];
-        if (name === "Route") {
-          routes.push(child);
+        const name = child['type']['displayName'] || child['type']['name'];
+
+        if (name === type) {
+          components.push(child);
         }
       });
-
     }
 
-    console.log(routes);
+    return components;
+  }
 
-    return routes;
+  /**
+   * called when component started to mount
+   */
+  componentWillMount() {
+    appData.menus = this.filter("Menu") as Menu[];
+  }
+
+  /**
+   * get routes from modules
+   */
+  get routes() {
+    return this.filter("Route");
   };
 
   /**

@@ -24,7 +24,7 @@ application.post("/remote/:service/:method", async (request, response) => {
 
   // verify token
   const authorization = request.headers["authorization"];
-  let user: User = null;
+  let user: User | undefined;
 
   if (authorization) {
 

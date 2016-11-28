@@ -256,7 +256,7 @@ function watch() {
             console.log("Style watcher is online");
         }
         else {
-            if (f.endsWith("scss")) {
+            if (f.endsWith("css")) {
                 sendMessage("reloading");
                 console.log("style changed..");
                 fs_extra_1.copySync("./public/styles", "./dist/public/styles");

@@ -5,6 +5,8 @@
     "module": "commonjs",
     "target": "es6",
     "jsx": "react",
-    "noImplicitAny": false
+    "noImplicitAny": false,
+    "strictNullChecks": true,
+    "types": ["whatwg-fetch", "watch", "node"]
   }
 }
