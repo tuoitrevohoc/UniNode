@@ -1,5 +1,5 @@
 import * as React from "react";
-import {Nav, Group, Heading} from "../common/components/Nav";
+import {Nav, Group, Item} from "../common/ui";
 
 /**
  * the application navigation bar
@@ -11,13 +11,15 @@ export class NavigationBar extends React.Component<{}, {}> {
    */
   render() {
     return (
-      <Nav isFixed={true} useDarkTheme={true}>
+      <Nav isFixed={true}>
         <Group>
-          <Heading>
-            The website
-          </Heading>
+          <Item className='brand' icon='code'>
+            Administrator Console
+          </Item>
+          <Item icon="content" />
         </Group>
         <Group rightAligned={true}>
+          <Item icon='alarm' />
         </Group>
       </Nav>
     )

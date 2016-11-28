@@ -1,1 +1,24 @@
 /** styles **/
+.ui.menu .item {
+    color: rgba(43, 61, 81, 0.8);
+    border-radius: 0 !important;
+    font-size: 14px;
+    font-family: "Roboto", sans-serif;
+    font-weight: 500;
+    padding: 20px;
+}
+
+.ui.menu a.item:hover {
+    background-color: #64b0f2;
+    color: #fff;
+}
+
+.ui.top.fixed.menu .brand.item {
+    background: #fff;
+    width: 250px;
+    color: rgba(43, 61, 81, 0.8);
+    text-align: center;
+    font-size: 18px;
+    transition-duration: 0.25s;
+    display: inline-block;
+}

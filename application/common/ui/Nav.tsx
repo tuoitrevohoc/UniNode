@@ -1,4 +1,5 @@
 import * as React from "react";
+import {Link} from "react-router";
 
 /**
  * navigation bars
@@ -34,9 +35,7 @@ export class Nav extends React.Component<NavProps, {}>{
                 `ui top menu ${this.props.className || ''}`
                 + `${this.props.isFixed ? ' fixed' : ''}`
                 + `${this.props.useDarkTheme ? ' inverted' : ''}`}>
-              <div className="ui container">
-                {this.props.children}
-              </div>
+              {this.props.children}
             </nav>);
   }
 }
@@ -70,19 +69,57 @@ export class Group extends React.Component<NavGroupProps, {}> {
 }
 
 /**
- * the heading of the nav bar
+ * the item properties
  */
-export class Heading extends React.Component<NavProps, {}> {
+interface ItemProps {
 
   /**
-   * render the heading
-   * @returns {any}
+   * link to
+   */
+  to?: string;
+
+  /**
+   * class name
+   */
+  className?: string;
+
+  /**
+   * active class name
+   */
+  activeClassName?: string;
+
+  /**
+   * render icon
+   */
+  icon?: string;
+
+  /**
+   * on click event
+   * @param event
+   */
+  onClick?(event: React.MouseEvent);
+}
+
+/**
+ * an item
+ */
+export class Item extends React.Component<ItemProps, {}> {
+
+  /**
+   * render the item
    */
   render() {
     return (
-      <a className={`header item ${this.props.className || ''}`}>
+      <Link to={this.props.to}
+            className={`ui item ${this.props.className || ''}`}
+            activeClassName={this.props.activeClassName}
+            onClick={this.props.onClick}
+        >
+        {this.props.icon ? (
+          <i className={`icon ${this.props.icon}`} />
+        ) : null}
         {this.props.children}
-      </a>
+      </Link>
     )
   }
 }
