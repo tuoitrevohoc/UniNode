@@ -8,6 +8,7 @@ import * as http from "http";
 import {watchTree} from "watch";
 import {copySync} from "fs-extra";
 import * as spawn from "cross-spawn";
+let config = require("../webpack.config");
 
 const compileOptions: ts.CompilerOptions = {
   "sourceMap": true,
@@ -67,117 +68,121 @@ function compileCode() {
  */
 function generateServices(options: ts.CompilerOptions) {
 
-  const program = ts.createProgram(
-      [
-        "./dist/application/Application.tsx",
-        "./typings/index.d.ts"
-      ],
+  const entries = config.entry;
+
+  for (const entryName in entries) {
+    const entry = entries[entryName];
+
+    const program = ts.createProgram(
+      entry,
       options);
 
-  const typeChecker = program.getTypeChecker();
+    const typeChecker = program.getTypeChecker();
 
-  for (const sourceFile of program.getSourceFiles()) {
+    for (const sourceFile of program.getSourceFiles()) {
 
-    const dirName = path.dirname(sourceFile.path);
+      const dirName = path.dirname(sourceFile.path);
 
-    if (dirName.endsWith("/application/services")) {
-      processService(sourceFile);
+      if (dirName.endsWith("/application/services")) {
+        processService(sourceFile);
+      }
     }
-  }
 
-  /**
-   * Process Service File
-   * @param sourceFile the source file to process
-   */
-  function processService(sourceFile: ts.SourceFile) {
 
     /**
-     * the service file
+     * Process Service File
+     * @param sourceFile the source file to process
      */
-    let serviceFile = {
-      imports: [
-        "import {invoke} from \"../common/RemoteService\";"
-      ],
-      classes: [],
-    };
+    function processService(sourceFile: ts.SourceFile) {
 
-    // Walk the tree to search for classes
-    ts.forEachChild(sourceFile, node => {
+      /**
+       * the service file
+       */
+      let serviceFile = {
+        imports: [
+          "import {invoke} from \"../common/network/RemoteService\";"
+        ],
+        classes: [],
+      };
 
-      if (isExportNode(node)) {
+      // Walk the tree to search for classes
+      ts.forEachChild(sourceFile, node => {
 
-        if (node.kind === ts.SyntaxKind.ClassDeclaration) {
+        if (isExportNode(node)) {
+
+          if (node.kind === ts.SyntaxKind.ClassDeclaration) {
 
 
-          const classDeclaration = <ts.ClassDeclaration> node;
-          const symbol = typeChecker.getSymbolAtLocation(classDeclaration.name);
+            const classDeclaration = <ts.ClassDeclaration> node;
+            const symbol = typeChecker.getSymbolAtLocation(classDeclaration.name);
 
-          let classDefinition = {
-            name: symbol.name,
-            methods: []
-          };
+            let classDefinition = {
+              name: symbol.name,
+              methods: []
+            };
 
-          serviceFile.classes.push(classDefinition);
+            serviceFile.classes.push(classDefinition);
 
-          for (const memberName in symbol.members) {
-            const member = symbol.members[memberName];
+            for (const memberName in symbol.members) {
+              const member = symbol.members[memberName];
 
-            if ((member.flags & ts.SymbolFlags.Method) !== 0) {
+              if ((member.flags & ts.SymbolFlags.Method) !== 0) {
 
-              const methodDeclaration = <ts.MethodDeclaration> member.valueDeclaration;
-              const signature = typeChecker.getSignatureFromDeclaration(methodDeclaration);
+                const methodDeclaration = <ts.MethodDeclaration> member.valueDeclaration;
+                const signature = typeChecker.getSignatureFromDeclaration(methodDeclaration);
 
-              const method = {
-                name: member.name,
-                parameters: signature.parameters.map((parameter: ts.Symbol) => ({
-                  name: parameter.getName(),
-                  type: typeChecker.typeToString(
+                const method = {
+                  name: member.name,
+                  parameters: signature.parameters.map((parameter: ts.Symbol) => ({
+                    name: parameter.getName(),
+                    type: typeChecker.typeToString(
                       typeChecker.getTypeOfSymbolAtLocation(parameter, parameter.valueDeclaration)
-                  )
-                })),
-                returnType: typeChecker.typeToString(signature.getReturnType())
-              };
+                    )
+                  })),
+                  returnType: typeChecker.typeToString(signature.getReturnType())
+                };
 
-              classDefinition.methods.push(method);
+                classDefinition.methods.push(method);
+              }
             }
           }
+        } else if (node.kind === ts.SyntaxKind.ImportDeclaration) {
+          const importDeclaration = <ts.ImportDeclaration> node;
+
+          const text = importDeclaration.getText(sourceFile);
+          const from = importDeclaration.moduleSpecifier.getText(sourceFile);
+
+          if (!from.match(new RegExp("/\/server\//"))) {
+            serviceFile.imports.push(text);
+          }
         }
-      } else if (node.kind === ts.SyntaxKind.ImportDeclaration) {
-        const importDeclaration = <ts.ImportDeclaration> node;
+      });
 
-        const text = importDeclaration.getText(sourceFile);
-        const from = importDeclaration.moduleSpecifier.getText(sourceFile);
+      let content = serviceFile.imports.join("\n") + "\n";
 
-        if (!from.match(new RegExp("/\/server\//"))) {
-          serviceFile.imports.push(text);
-        }
-      }
-    });
+      content += serviceFile.classes.map(classDeclaration => {
+        let classText = "export class " + classDeclaration.name + " {\n";
 
-    let content = serviceFile.imports.join("\n") + "\n";
-
-    content += serviceFile.classes.map(classDeclaration => {
-      let classText = "export class " + classDeclaration.name + " {\n";
-
-      classText += classDeclaration.methods.map(method => {
-        let methodText = "\tasync " + method.name + "(" + method.parameters.map(
-                parameter => parameter.name + ": " + parameter.type
+        classText += classDeclaration.methods.map(method => {
+          let methodText = "\tasync " + method.name + "(" + method.parameters.map(
+              parameter => parameter.name + ": " + parameter.type
             ).join(",") + "): " + method.returnType + " {\n";
 
-        methodText += "\t\treturn invoke(\"" + classDeclaration.name + "\", \"" + method.name +
+          methodText += "\t\treturn invoke(\"" + classDeclaration.name + "\", \"" + method.name +
             "\", Array.from(arguments));\n";
-        methodText += "\t}\n";
+          methodText += "\t}\n";
 
-        return methodText;
+          return methodText;
 
-      }).join("\n");
+        }).join("\n");
 
-      classText += "}";
+        classText += "}";
 
-      return classText;
-    }).join("\n\n");
+        return classText;
+      }).join("\n\n");
 
-    fs.writeFileSync(sourceFile.path, content);
+      fs.writeFileSync(sourceFile.path, content);
+    }
   }
 }
 

@@ -2,7 +2,7 @@ import * as express from "express";
 import * as bodyParser from "body-parser";
 import * as jwt from "jsonwebtoken";
 
-import {User} from "./model/User";
+import {User} from "./common/model/User";
 import {config} from "./server/Security";
 import {services} from "./services/index";
 

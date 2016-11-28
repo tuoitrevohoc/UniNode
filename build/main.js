@@ -16,6 +16,7 @@ const http = require("http");
 const watch_1 = require("watch");
 const fs_extra_1 = require("fs-extra");
 const spawn = require("cross-spawn");
+let config = require("../webpack.config");
 const compileOptions = {
     "sourceMap": true,
     "module": ts.ModuleKind.CommonJS,
@@ -63,83 +64,84 @@ function compileCode() {
  * @param options
  */
 function generateServices(options) {
-    const program = ts.createProgram([
-        "./dist/application/Application.tsx",
-        "./typings/index.d.ts"
-    ], options);
-    const typeChecker = program.getTypeChecker();
-    for (const sourceFile of program.getSourceFiles()) {
-        const dirName = path.dirname(sourceFile.path);
-        if (dirName.endsWith("/application/services")) {
-            processService(sourceFile);
+    const entries = config.entry;
+    for (const entryName in entries) {
+        const entry = entries[entryName];
+        const program = ts.createProgram(entry, options);
+        const typeChecker = program.getTypeChecker();
+        for (const sourceFile of program.getSourceFiles()) {
+            const dirName = path.dirname(sourceFile.path);
+            if (dirName.endsWith("/application/services")) {
+                processService(sourceFile);
+            }
         }
-    }
-    /**
-     * Process Service File
-     * @param sourceFile the source file to process
-     */
-    function processService(sourceFile) {
         /**
-         * the service file
+         * Process Service File
+         * @param sourceFile the source file to process
          */
-        let serviceFile = {
-            imports: [
-                "import {invoke} from \"../common/RemoteService\";"
-            ],
-            classes: [],
-        };
-        // Walk the tree to search for classes
-        ts.forEachChild(sourceFile, node => {
-            if (isExportNode(node)) {
-                if (node.kind === ts.SyntaxKind.ClassDeclaration) {
-                    const classDeclaration = node;
-                    const symbol = typeChecker.getSymbolAtLocation(classDeclaration.name);
-                    let classDefinition = {
-                        name: symbol.name,
-                        methods: []
-                    };
-                    serviceFile.classes.push(classDefinition);
-                    for (const memberName in symbol.members) {
-                        const member = symbol.members[memberName];
-                        if ((member.flags & ts.SymbolFlags.Method) !== 0) {
-                            const methodDeclaration = member.valueDeclaration;
-                            const signature = typeChecker.getSignatureFromDeclaration(methodDeclaration);
-                            const method = {
-                                name: member.name,
-                                parameters: signature.parameters.map((parameter) => ({
-                                    name: parameter.getName(),
-                                    type: typeChecker.typeToString(typeChecker.getTypeOfSymbolAtLocation(parameter, parameter.valueDeclaration))
-                                })),
-                                returnType: typeChecker.typeToString(signature.getReturnType())
-                            };
-                            classDefinition.methods.push(method);
+        function processService(sourceFile) {
+            /**
+             * the service file
+             */
+            let serviceFile = {
+                imports: [
+                    "import {invoke} from \"../common/network/RemoteService\";"
+                ],
+                classes: [],
+            };
+            // Walk the tree to search for classes
+            ts.forEachChild(sourceFile, node => {
+                if (isExportNode(node)) {
+                    if (node.kind === ts.SyntaxKind.ClassDeclaration) {
+                        const classDeclaration = node;
+                        const symbol = typeChecker.getSymbolAtLocation(classDeclaration.name);
+                        let classDefinition = {
+                            name: symbol.name,
+                            methods: []
+                        };
+                        serviceFile.classes.push(classDefinition);
+                        for (const memberName in symbol.members) {
+                            const member = symbol.members[memberName];
+                            if ((member.flags & ts.SymbolFlags.Method) !== 0) {
+                                const methodDeclaration = member.valueDeclaration;
+                                const signature = typeChecker.getSignatureFromDeclaration(methodDeclaration);
+                                const method = {
+                                    name: member.name,
+                                    parameters: signature.parameters.map((parameter) => ({
+                                        name: parameter.getName(),
+                                        type: typeChecker.typeToString(typeChecker.getTypeOfSymbolAtLocation(parameter, parameter.valueDeclaration))
+                                    })),
+                                    returnType: typeChecker.typeToString(signature.getReturnType())
+                                };
+                                classDefinition.methods.push(method);
+                            }
                         }
                     }
                 }
-            }
-            else if (node.kind === ts.SyntaxKind.ImportDeclaration) {
-                const importDeclaration = node;
-                const text = importDeclaration.getText(sourceFile);
-                const from = importDeclaration.moduleSpecifier.getText(sourceFile);
-                if (!from.match(new RegExp("/\/server\//"))) {
-                    serviceFile.imports.push(text);
+                else if (node.kind === ts.SyntaxKind.ImportDeclaration) {
+                    const importDeclaration = node;
+                    const text = importDeclaration.getText(sourceFile);
+                    const from = importDeclaration.moduleSpecifier.getText(sourceFile);
+                    if (!from.match(new RegExp("/\/server\//"))) {
+                        serviceFile.imports.push(text);
+                    }
                 }
-            }
-        });
-        let content = serviceFile.imports.join("\n") + "\n";
-        content += serviceFile.classes.map(classDeclaration => {
-            let classText = "export class " + classDeclaration.name + " {\n";
-            classText += classDeclaration.methods.map(method => {
-                let methodText = "\tasync " + method.name + "(" + method.parameters.map(parameter => parameter.name + ": " + parameter.type).join(",") + "): " + method.returnType + " {\n";
-                methodText += "\t\treturn invoke(\"" + classDeclaration.name + "\", \"" + method.name +
-                    "\", Array.from(arguments));\n";
-                methodText += "\t}\n";
-                return methodText;
-            }).join("\n");
-            classText += "}";
-            return classText;
-        }).join("\n\n");
-        fs.writeFileSync(sourceFile.path, content);
+            });
+            let content = serviceFile.imports.join("\n") + "\n";
+            content += serviceFile.classes.map(classDeclaration => {
+                let classText = "export class " + classDeclaration.name + " {\n";
+                classText += classDeclaration.methods.map(method => {
+                    let methodText = "\tasync " + method.name + "(" + method.parameters.map(parameter => parameter.name + ": " + parameter.type).join(",") + "): " + method.returnType + " {\n";
+                    methodText += "\t\treturn invoke(\"" + classDeclaration.name + "\", \"" + method.name +
+                        "\", Array.from(arguments));\n";
+                    methodText += "\t}\n";
+                    return methodText;
+                }).join("\n");
+                classText += "}";
+                return classText;
+            }).join("\n\n");
+            fs.writeFileSync(sourceFile.path, content);
+        }
     }
 }
 /**
@@ -175,7 +177,7 @@ function startLiveReloadServer() {
         response.end();
     });
     const wsServer = new ws.Server({
-        server: server
+        server
     });
     wsServer.on("connection", (socket) => {
         sockets.push(socket);
