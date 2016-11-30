@@ -71,7 +71,7 @@ function generateServices(options) {
         const typeChecker = program.getTypeChecker();
         for (const sourceFile of program.getSourceFiles()) {
             const dirName = path.dirname(sourceFile.path);
-            if (dirName.endsWith("/application/services")) {
+            if (dirName.endsWith("/services")) {
                 processService(sourceFile);
             }
         }
@@ -100,20 +100,22 @@ function generateServices(options) {
                             methods: []
                         };
                         serviceFile.classes.push(classDefinition);
-                        for (const memberName in symbol.members) {
-                            const member = symbol.members[memberName];
-                            if ((member.flags & ts.SymbolFlags.Method) !== 0) {
-                                const methodDeclaration = member.valueDeclaration;
-                                const signature = typeChecker.getSignatureFromDeclaration(methodDeclaration);
-                                const method = {
-                                    name: member.name,
-                                    parameters: signature.parameters.map((parameter) => ({
-                                        name: parameter.getName(),
-                                        type: typeChecker.typeToString(typeChecker.getTypeOfSymbolAtLocation(parameter, parameter.valueDeclaration))
-                                    })),
-                                    returnType: typeChecker.typeToString(signature.getReturnType())
-                                };
-                                classDefinition.methods.push(method);
+                        if (symbol.members) {
+                            for (const memberName in symbol.members) {
+                                const member = symbol.members[memberName];
+                                if ((member.flags & ts.SymbolFlags.Method) !== 0) {
+                                    const methodDeclaration = member.valueDeclaration;
+                                    const signature = typeChecker.getSignatureFromDeclaration(methodDeclaration);
+                                    const method = {
+                                        name: member.name,
+                                        parameters: signature.parameters.map((parameter) => ({
+                                            name: parameter.getName(),
+                                            type: typeChecker.typeToString(typeChecker.getTypeOfSymbolAtLocation(parameter, parameter.valueDeclaration))
+                                        })),
+                                        returnType: typeChecker.typeToString(signature.getReturnType())
+                                    };
+                                    classDefinition.methods.push(method);
+                                }
                             }
                         }
                     }
@@ -260,7 +262,7 @@ function watch() {
                 sendMessage("reloading");
                 console.log("style changed..");
                 fs_extra_1.copySync("./public/styles", "./dist/public/styles");
-                sendMessage();
+                sendMessage("reload-css");
                 console.log("reloaded..");
             }
         }

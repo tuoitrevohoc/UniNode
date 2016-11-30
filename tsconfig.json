@@ -6,7 +6,6 @@
     "target": "es6",
     "jsx": "react",
     "noImplicitAny": false,
-    "strictNullChecks": true,
     "types": ["whatwg-fetch", "watch", "node"]
   }
 }

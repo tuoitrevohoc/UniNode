@@ -2,13 +2,12 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 
 import {ModuleDefinition} from "./common/components/ModuleDefinition";
-import UserManagementModule from "./modules/user-managerment/index";
 import {NavigationBar} from "./components/NavigationBar";
 import {SidebarMenu} from "./components/SidebarMenu";
 import {appData} from "./stores/AppData";
 import {Menu} from "./common/ui/Menu";
 import {Route, Router, browserHistory} from "react-router";
-
+import UserManagementModule from "./modules/user-managerment";
 
 /**
  * Application component
@@ -108,4 +107,4 @@ class ModuleApplication extends React.Component<ModuleApplicationProps, {}> {
 
 ReactDOM.render(
   <ModuleApplication modules={[UserManagementModule]}/>,
-  document.getElementById("root"));
+  document.querySelector("#root"));

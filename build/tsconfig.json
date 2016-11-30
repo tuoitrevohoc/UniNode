@@ -5,9 +5,5 @@
     "target": "es6",
     "jsx": "react",
     "noImplicitAny": false
-  },
-  "files": [
-    "main.ts",
-    "../typings/index.d.ts"
-  ]
+  }
 }

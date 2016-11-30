@@ -1,6 +1,11 @@
 body {
     overflow: hidden;
     background-color: rgb(233, 240, 245);
+    color: #73879C;
+}
+
+a {
+    cursor: pointer;
 }
 
 /** styles **/
@@ -11,17 +16,21 @@ body {
     font-family: "Roboto", sans-serif;
     font-weight: 500;
     padding: 20px;
+    color: #fff;
 }
 
 .ui.menu a.item:hover {
     background-color: #64b0f2;
-    color: #fff;
+}
+
+.ui.top.fixed.menu {
+    background-color: rgb(0, 135, 190)
 }
 
 .ui.top.fixed.menu .brand.item {
-    background: #fff;
+    background-color: rgb(0, 73, 103);
     width: 250px;
-    color: rgba(43, 61, 81, 0.8);
+    color: #fff;
     text-align: center;
     font-size: 18px;
     transition-duration: 0.25s;
@@ -40,11 +49,11 @@ body {
     bottom: 0;
     border-width: 0 1px 0 0;
     overflow: auto;
-    background-color: #333;
+    background-color: #fff;
 }
 
 .ui.drawer.menu .item {
-    color: #fff;
+    color: #73879C;
 }
 
 #content {
@@ -52,4 +61,69 @@ body {
     margin-top: 60px;
     transition-duration: 0.25s;
     padding: 10px;
+}
+
+.box-container {
+    padding: 5px;
+    margin: 0 auto;
+    max-width: 900px;
+}
+
+.box-container .box-content {
+    background-color: #fff;
+
+}
+
+.box-container .box-content .content {
+    padding: 10px;
+}
+
+
+.box-container .box-content .header {
+    padding: 10px;
+    font-size: large;
+    border-bottom: 2px solid #eee;
+    color: #73879C;
+}
+
+.ui.table {
+    border-radius: 0;
+}
+
+.ui.table thead tr th {
+    border-bottom-width: 2px;
+    color: #73879C;
+    padding: 8px;
+    position: relative;
+}
+
+.ui.table thead tr th .sort.button {
+    position: absolute;
+    right: 12px;
+    top: 0;
+}
+
+
+/** Semantic UI customization **/
+.ui.button, .ui.icon.button {
+    border-radius: 3px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    padding: 5px 10px;
+    color: #73879C;
+    transition-duration: 0.1s;
+}
+
+.ui.icon.button {
+    padding: 5px;
+}
+
+.ui.button:hover, .ui.button.icon:hover {
+    border: 1px solid #ccc;
+    box-shadow: 0 1px 0 #C8D7E1;
+    background-color: #fff;
+}
+
+.ui.button:active, .ui.button.icon:active {
+    box-shadow: 0 1px 0 #C8D7E1 inset;
 }

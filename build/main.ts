@@ -359,7 +359,7 @@ function watch() {
 
         copySync("./public/styles", "./dist/public/styles");
 
-        sendMessage();
+        sendMessage("reload-css");
         console.log("reloaded..");
       }
     }
