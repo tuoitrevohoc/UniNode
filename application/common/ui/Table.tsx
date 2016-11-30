@@ -161,7 +161,7 @@ export class ColumnHeader
     return (
       <th className={this.props.className || ''}>
         <a className="sort button">
-          <i className="sort content ascending icon" />
+          <i className="tiny sort content ascending icon" />
         </a>
         {this.props.children}
       </th>

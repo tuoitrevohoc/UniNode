@@ -32,9 +32,7 @@ export class Button extends React.Component<ButtonProps, {}> {
       <a className={`ui button ${this.props.className || 0}`}
          onClick={this.props.onClick}
         >
-        {this.props.icon ? (
-          <i className={`${this.props.icon} icon`} />
-        ) : null}
+        {this.props.icon && <i className={`${this.props.icon} icon`} />}
         {this.props.children}
       </a>
     )

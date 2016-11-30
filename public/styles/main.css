@@ -54,6 +54,7 @@ a {
 
 .ui.drawer.menu .item {
     color: #73879C;
+    border: none;
 }
 
 #content {
@@ -100,7 +101,7 @@ a {
 .ui.table thead tr th .sort.button {
     position: absolute;
     right: 12px;
-    top: 0;
+    top: 2px;
 }
 
 
