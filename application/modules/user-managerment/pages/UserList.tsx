@@ -37,20 +37,18 @@ export class UserList extends React.Component<{}, {}> {
               }
             }
           >
-            <Column name="name" />
-            <Column name="email" />
-            <Column name="avatar" />
             <Column name="actions"
                     render={(item, name) =>
               <Cell key={name}>
                 <Button linkTo={`/users/edit/${item.id}`}
-                        className='tiny'
-                        icon='edit'>
-                  Edit
-                </Button>
-                <Button className='tiny' icon='trash'>Delete</Button>
+                        className='tiny icon'
+                        icon='edit' />
+                <Button className='tiny icon danger' icon='trash' />
               </Cell>
             }/>
+            <Column name="name" />
+            <Column name="email" />
+            <Column name="avatar" />
           </Table>
         </Content>
       </Box>

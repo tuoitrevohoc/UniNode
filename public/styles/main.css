@@ -128,5 +128,10 @@ a {
 }
 
 .ui.button.primary {
-  background-color: rgb(0, 135, 190);
+  color: rgb(0, 135, 190);
+  background-color: #fff;
+}
+
+.ui.button.danger {
+  color: #f55656;
 }

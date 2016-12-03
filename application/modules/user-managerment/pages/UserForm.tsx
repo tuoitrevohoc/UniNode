@@ -27,8 +27,12 @@ export class UserForm extends React.Component<UserFormProps, {}> {
    */
   render() {
     return (
-      <div>
-        This is the user form
+      <div className="slideIn animated">
+        <div>This is the user form.</div>
+        <div>This is the user form.</div>
+        <div>This is the user form.</div>
+        <div>This is the user form.</div>
+        <div>This is the user form.</div>
       </div>
     );
   }

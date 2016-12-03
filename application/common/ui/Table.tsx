@@ -99,7 +99,7 @@ export class Table
     const editor = this.props.editor as React.Component<any, any>;
 
     const editingItemId = editor != null ? (
-      editor.props.routeParams && editor.props.routeParams.id ? editor.props.routeParams.id : 0
+      (editor.props.routeParams && editor.props.routeParams.id) || 0
     ) : null;
 
     return (
@@ -117,7 +117,7 @@ export class Table
         <tbody>
           <tr className="action-row">
             <td colSpan={columns.length}>
-              <Button icon="plus"
+              <Button icon="plus primary"
                       linkTo="/users/create">
                 Add a record
               </Button>
@@ -152,8 +152,6 @@ export class Table
    * @param columns
    * @param item
    * @param index
-   * @param editingItemId
-   * @param editor
    * @return {any}
    */
   renderRow(columns: ColumnProps[],
