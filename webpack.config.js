@@ -19,6 +19,7 @@ module.exports = {
             { test: /\.js$/, loader: "source-map-loader" }
         ]
     },
+    devtool: "source-map",
     externals: {
         "react": "React",
         "react-dom": "ReactDOM",

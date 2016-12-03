@@ -1,19 +1,8 @@
 import * as React from "react";
-
-/**
- * table data
- */
-interface TableData {
-  /**
-   * data
-   */
-  data: any[];
-
-  /**
-   * total record
-   */
-  total: number;
-}
+import {PageData} from "../model/PageData";
+import {Button} from "./Button";
+import ReactChildren = React.ReactChildren;
+import ReactNode = React.ReactNode;
 
 /**
  * table properties
@@ -30,7 +19,12 @@ interface TableProps {
    * @param currentPage current page
    * @param sortFields fields to sort
    */
-  onLoadData(currentPage: number, sortFields: string[]): Promise<TableData>;
+  onLoadData(currentPage: number, sortFields: string[]): Promise<PageData<any>>;
+
+  /**
+   * editor forms
+   */
+  editor?: ReactNode;
 }
 
 /**
@@ -102,6 +96,12 @@ export class Table
       child => (child as React.ComponentElement<ColumnProps, any>).props
     );
 
+    const editor = this.props.editor as React.Component<any, any>;
+
+    const editingItemId = editor != null ? (
+      editor.props.routeParams && editor.props.routeParams.id ? editor.props.routeParams.id : 0
+    ) : null;
+
     return (
       <table className={`ui celled striped table ${this.props.className || ''}`}>
         <thead>
@@ -115,17 +115,73 @@ export class Table
           </tr>
         </thead>
         <tbody>
+          <tr className="action-row">
+            <td colSpan={columns.length}>
+              <Button icon="plus"
+                      linkTo="/users/create">
+                Add a record
+              </Button>
+            </td>
+          </tr>
+          {editingItemId == 0 && this.renderEditor(editor, columns.length)}
         {(this.state.data || []).map((item, index) => (
-          <tr key={index}>{
-            columns.map(
-              column =>
-                column.render ? column.render(item, column.name) :
-                  <Cell key={column.name}>{item[column.name]}</Cell>
-            )
-          }</tr>
+          [
+            // render the row
+            this.renderRow(columns, item, index),
+            // render editor if editing item id match
+            editingItemId == item.id && this.renderEditor(editor, columns.length)]
         ))}
         </tbody>
       </table>
+    )
+  }
+
+  /**
+   * render a cell
+   * @param column
+   * @param item
+   * @return {React.ReactElement<any>}
+   */
+  renderCell(column: ColumnProps, item: any) {
+    return column.render ? column.render(item, column.name) :
+      <Cell key={column.name}>{item[column.name]}</Cell>;
+  }
+
+  /**
+   * render a data row
+   * @param columns
+   * @param item
+   * @param index
+   * @param editingItemId
+   * @param editor
+   * @return {any}
+   */
+  renderRow(columns: ColumnProps[],
+            item: any,
+            index: number,
+            ) {
+    return <tr key={index}>{
+      columns.map(
+        column => (
+          this.renderCell(column, item)
+        )
+      )
+    }</tr>
+  }
+
+  /**
+   * render the editor
+   * @param editor
+   * @param colSpan
+   * @return {any}
+   */
+  renderEditor(editor: ReactNode, colSpan: number) {
+    return (
+      <tr className="editor-row">
+        <td colSpan={colSpan}>
+          {editor}
+        </td>
+      </tr>
     )
   }
 }

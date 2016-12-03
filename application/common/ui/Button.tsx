@@ -1,4 +1,5 @@
 import * as React from "react";
+import {Link} from "react-router";
 
 /**
  * button class
@@ -16,10 +17,15 @@ interface ButtonProps {
   icon?: string;
 
   /**
+   * link to
+   */
+  linkTo?: string;
+
+  /**
    * on click
    * @param event
    */
-  onClick?(event: React.MouseEvent<HTMLElement>);
+  onClick?(event: React.MouseEvent<Link>);
 }
 
 /**
@@ -29,12 +35,13 @@ export class Button extends React.Component<ButtonProps, {}> {
 
   render() {
     return (
-      <a className={`ui button ${this.props.className || 0}`}
-         onClick={this.props.onClick}
-        >
+      <Link to={this.props.linkTo}
+            className={`ui button ${this.props.className || 0}`}
+            onClick={this.props.onClick}
+      >
         {this.props.icon && <i className={`${this.props.icon} icon`} />}
         {this.props.children}
-      </a>
-    )
+      </Link>
+    );
   }
 }

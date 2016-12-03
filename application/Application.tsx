@@ -6,8 +6,9 @@ import {NavigationBar} from "./components/NavigationBar";
 import {SidebarMenu} from "./components/SidebarMenu";
 import {appData} from "./stores/AppData";
 import {Menu} from "./common/ui/Menu";
-import {Route, Router, browserHistory} from "react-router";
+import {Route, Router} from "react-router";
 import UserManagementModule from "./modules/user-managerment";
+import {browserHistory} from "./common/ui/index";
 
 /**
  * Application component

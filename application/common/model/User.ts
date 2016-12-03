@@ -1,12 +1,8 @@
+import {AppModel} from "./AppModel";
 /**
  * the interface for user data
  */
-export interface User {
-
-  /**
-   * id of user
-   */
-  id?: string;
+export interface User extends AppModel {
 
   /**
    * name of the user
@@ -17,6 +13,11 @@ export interface User {
    * email of user
    */
   email: string;
+
+  /**
+   * avatar of user
+   */
+  avatar?: string;
 }
 
 /**
