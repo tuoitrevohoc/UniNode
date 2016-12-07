@@ -37,6 +37,9 @@ export class UserList extends React.Component<{}, {}> {
               }
             }
           >
+            <Column name="name" />
+            <Column name="email" />
+            <Column name="avatar" />
             <Column name="actions"
                     render={(item, name) =>
               <Cell key={name}>
@@ -46,9 +49,6 @@ export class UserList extends React.Component<{}, {}> {
                 <Button className='tiny icon danger' icon='trash' />
               </Cell>
             }/>
-            <Column name="name" />
-            <Column name="email" />
-            <Column name="avatar" />
           </Table>
         </Content>
       </Box>

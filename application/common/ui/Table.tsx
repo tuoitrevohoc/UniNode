@@ -116,7 +116,7 @@ export class Table
         </thead>
         <tbody>
           <tr className="action-row">
-            <td colSpan={columns.length}>
+            <td colSpan={columns.length} style={{textAlign: 'right'}}>
               <Button icon="plus primary"
                       linkTo="/users/create">
                 Add a record
