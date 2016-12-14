@@ -108,4 +108,4 @@ class ModuleApplication extends React.Component<ModuleApplicationProps, {}> {
 
 ReactDOM.render(
   <ModuleApplication modules={[UserManagementModule]}/>,
-  document.querySelector("#root"));
+  document["getElementById"]("root"));

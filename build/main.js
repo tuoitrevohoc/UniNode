@@ -3,14 +3,14 @@
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator.throw(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
         function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments)).next());
     });
 };
-const ts = require('typescript');
-const path = require('path');
-const fs = require('fs-extra');
+const ts = require("typescript");
+const path = require("path");
+const fs = require("fs-extra");
 const ws = require("ws");
 const http = require("http");
 const watch_1 = require("watch");
@@ -20,7 +20,7 @@ let config = require("../webpack.config");
 const compileOptions = {
     "sourceMap": true,
     "module": ts.ModuleKind.CommonJS,
-    "target": ts.ScriptTarget.ES6,
+    "target": ts.ScriptTarget.ES2016,
     "jsx": ts.JsxEmit.React,
     "noImplicitAny": false
 };
@@ -29,7 +29,7 @@ const compileOptions = {
  * @param node the node to check
  */
 function isExportNode(node) {
-    return ((node.flags & ts.NodeFlags.Export) !== 0) &&
+    return ((node.flags & ts.NodeFlags.ExportContext) !== 0) &&
         (node.parent && node.parent.kind === ts.SyntaxKind.SourceFile);
 }
 /**
