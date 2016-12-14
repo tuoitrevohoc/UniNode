@@ -34,7 +34,7 @@ interface ModuleDefinition {
 const compileOptions: ts.CompilerOptions = {
   "sourceMap": true,
   "module": ts.ModuleKind.CommonJS,
-  "target": ts.ScriptTarget.ES6,
+  "target": ts.ScriptTarget.ES2016,
   "jsx": ts.JsxEmit.React,
   "noImplicitAny": false
 };
@@ -45,7 +45,7 @@ const compileOptions: ts.CompilerOptions = {
  * @param node the node to check
  */
 function isExportNode(node: ts.Node) {
-  return ((node.flags & ts.NodeFlags.Export) !== 0) &&
+  return ((node.flags & ts.NodeFlags.ExportContext) !== 0) &&
       (node.parent && node.parent.kind === ts.SyntaxKind.SourceFile);
 }
 

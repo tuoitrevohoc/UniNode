@@ -11,8 +11,8 @@
     "@types/jsonwebtoken": "^7.1.33",
     "@types/mime": "0.0.29",
     "@types/mongoose": "^4.6.2",
-    "@types/node": "^6.0.51",
-    "@types/react": "^0.14.50",
+    "@types/node": "^6.0.52",
+    "@types/react": "^0.14.55",
     "@types/react-dom": "^0.14.19",
     "@types/react-router": "^2.0.39",
     "@types/serve-static": "^1.7.31",
@@ -20,18 +20,19 @@
     "@types/whatwg-fetch": "0.0.32",
     "@types/whatwg-streams": "0.0.1",
     "@types/ws": "0.0.37",
+    "babel-polyfill": "^6.20.0",
     "body-parser": "^1.15.2",
     "cross-spawn": "^5.0.1",
     "express": "^4.14.0",
     "fs-extra": "^0.30.0",
-    "jsonwebtoken": "^7.1.9",
-    "mongoose": "^4.7.0",
+    "jsonwebtoken": "^7.2.1",
+    "mongoose": "^4.7.2",
     "react": "^15.3.2",
     "react-dom": "^15.3.2",
     "react-router": "^2.8.1",
     "redux": "^3.6.0",
     "watch": "^1.0.1",
-    "webpack": "^1.13.2",
+    "webpack": "^1.14.0",
     "whatwg-fetch": "^1.0.0",
     "ws": "^1.1.1"
   },
@@ -41,7 +42,7 @@
     "ts-loader": "^0.8.2",
     "webpack": "^1.13.2",
     "webpack-dev-server": "^1.16.2",
-    "typescript": "^2.0.10"
+    "typescript": "^2.1.4"
   },
   "scripts": {
     "start": "node ./build/main.js"
