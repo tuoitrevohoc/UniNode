@@ -106,7 +106,7 @@ a {
   border-radius: 3px;
   background-color: #fff;
   border: 1px solid #ddd;
-  padding: 5px 10px;
+  padding: 10px 15px;
   color: #73879C;
   transition-duration: 0.1s;
 }
@@ -132,4 +132,22 @@ a {
 
 .ui.button.danger {
   color: #f55656;
+}
+
+.bottom.sheet {
+  padding: 10px 0;
+}
+
+.ui.top.attached.menu>.item:first-child,
+.ui.tabular.menu .active.item,
+div.ui.bottom.attached.tab.segment.active {
+  border-radius: 0 !important;
+}
+
+.ui.tabular.menu.attached >.item {
+  padding: 10px 15px;
+}
+
+.ui.tabular.menu.attached {
+  min-height: 20px;
 }

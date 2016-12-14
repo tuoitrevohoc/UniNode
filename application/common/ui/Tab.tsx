@@ -33,17 +33,29 @@ interface TabProps {
 export class Tabs extends React.Component<{}, TabsState> {
 
   /**
+   * The initial state
+   */
+  state: TabsState = {
+    currentTabIndex: 0
+  };
+
+  /**
    * get current tabs
    * @returns {React.ReactElement<TabProps>[]}
    */
   get tabs() {
     return React.Children.map(this.props.children,
-      (child, index) => {
-        const element = child as React.ReactElement<TabProps>;
-        element.props.isActive = index == this.state.currentTabIndex;
-        return element;
-      }
+      (child) => child as React.ReactElement<TabProps>
     );
+  }
+
+  /**
+   * check tab is active
+   * @param index
+   * @returns {boolean}
+   */
+  isActive(index: number) {
+    return index === this.state.currentTabIndex;
   }
 
   /**
@@ -58,18 +70,14 @@ export class Tabs extends React.Component<{}, TabsState> {
           {tabs.map(
             (tab, index) => (
               <a key={index}
-                 className={`item ${tab.props.isActive && 'active'}`}>{tab.props.title}</a>
+                 onClick={() => this.setState({currentTabIndex: index})}
+                 className={`item ${this.isActive(index) && 'active'}`}>{tab.props.title}</a>
             )
           )}
         </div>
-        {tabs.map(
-          (tab, index) => (
-            <div key={index}
-                 className={`ui bottom attached tab segment ${tab.props.isActive && 'active'}`}>
-              {tab}
-            </div>
-          )
-        )}
+        <div className="ui bottom attached tab segment active">
+          {tabs[this.state.currentTabIndex]}
+        </div>
       </div>
     )
   }
@@ -85,7 +93,7 @@ export class Tab extends React.Component<TabProps, {}> {
    */
   render() {
     return (
-      <div>this.props.children</div>
+      <div>{this.props.children}</div>
     )
   }
 }

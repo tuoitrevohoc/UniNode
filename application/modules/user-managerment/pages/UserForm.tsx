@@ -1,4 +1,5 @@
 import * as React from "react";
+import {Tabs, Tab} from "../../../common/ui";
 
 /**
  * the user form interface
@@ -28,11 +29,25 @@ export class UserForm extends React.Component<UserFormProps, {}> {
   render() {
     return (
       <div className="slideIn animated">
-        <div>This is the user form.</div>
-        <div>This is the user form.</div>
-        <div>This is the user form.</div>
-        <div>This is the user form.</div>
-        <div>This is the user form.</div>
+        <Tabs>
+          <Tab title="General">
+            General Tab
+
+            <div className="bottom sheet">
+              <a className="ui button">Save</a>
+            </div>
+          </Tab>
+          <Tab title="Avatar">
+            Avatar
+          </Tab>
+          <Tab title="Avatar">
+            Avatar
+          </Tab>
+          <Tab title="Avatar">
+            Avatar
+          </Tab>
+        </Tabs>
+
       </div>
     );
   }
